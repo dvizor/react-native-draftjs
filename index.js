@@ -15,13 +15,18 @@ class RNDraftView extends Component {
     styleSheet: PropTypes.string,
     styleMap: PropTypes.object,
     blockRenderMap: PropTypes.object,
-    onEditorReady: PropTypes.func
+    onEditorReady: PropTypes.func,
+    mentionsURL: PropTypes.string,
+    accessToken: PropTypes.string,
+    onLayout: PropTypes.func,
   };
 
   _webViewRef = React.createRef();
 
   state = {
-    editorState: ""
+    editorState: "",
+    rawEditorState: null,
+    mentions: [],
   };
 
   executeScript = (functionName, parameter) => {
@@ -31,6 +36,13 @@ class RNDraftView extends Component {
       );
   };
 
+  setDefaultValue = (defaultValue) => {
+    this._webViewRef.current &&
+      this._webViewRef.current.injectJavaScript(
+        `window.setDefaultValue(${JSON.stringify(defaultValue)});true;`
+      );
+  }
+
   setBlockType = blockType => {
     this.executeScript("toggleBlockType", blockType);
   };
@@ -39,22 +51,35 @@ class RNDraftView extends Component {
     this.executeScript("toggleInlineStyle", style);
   };
 
+  getMentions = () => {
+    return this.state.mentions;
+  }
+
   getEditorState = () => {
-    return this.state.editorState;
+    return [this.state.editorState, this.state.rawEditorState];
   };
 
   _onMessage = event => {
     const {
       onStyleChanged = () => null,
-      onBlockTypeChanged = () => null
+      onBlockTypeChanged = () => null,
+      onMentionSuggestionsActive = () => null,
     } = this.props;
     const { data } = event.nativeEvent;
-    const { blockType, styles, editorState, isMounted } = JSON.parse(data);
+    const { blockType, styles, editorState, rawEditorState, mentions, mentionsOpen, isMounted, containerHeight } = JSON.parse(data);
     onStyleChanged(styles ? styles.split(",") : []);
     if (blockType) onBlockTypeChanged(blockType);
     if (editorState)
       this.setState({ editorState: editorState.replace(/(\r\n|\n|\r)/gm, "") });
+    if(rawEditorState)
+      this.setState({ rawEditorState, });
+    if(mentions)
+      this.setState({ mentions, });
     if (isMounted) this.widgetMounted();
+    if(mentionsOpen && onMentionSuggestionsActive) onMentionSuggestionsActive();
+    if(typeof containerHeight === 'number' && !isNaN(containerHeight) && this.props.onLayout) {
+      this.props.onLayout(containerHeight);
+    }
   };
 
   widgetMounted = () => {
@@ -64,10 +89,18 @@ class RNDraftView extends Component {
       styleSheet,
       styleMap,
       blockRenderMap,
-      onEditorReady = () => null
+      onEditorReady = () => null,
+      mentionsURL,
+      accessToken,
     } = this.props;
+    if(mentionsURL) {
+      this.executeScript("setMentionsURI", mentionsURL);
+    }
+    if(accessToken) {
+      this.executeScript("setCommunityAccessToken", accessToken);
+    }
     if (defaultValue) {
-      this.executeScript("setDefaultValue", defaultValue);
+      this.setDefaultValue(defaultValue);
     }
     if (placeholder) {
       this.executeScript("setEditorPlaceholder", placeholder);
@@ -103,6 +136,10 @@ class RNDraftView extends Component {
     this.executeScript("blurTextEditor");
   };
 
+  resetEditorState = () => {
+    this.executeScript("resetEditorState");
+  }
+
   render() {
     const { style = { flex: 1 } } = this.props;
     return (
@@ -118,6 +155,8 @@ class RNDraftView extends Component {
         keyboardDisplayRequiresUserAction={false}
         originWhitelist={["*"]}
         onMessage={this._onMessage}
+        scrollEnabled={false}
+        scalesPageToFit={Platform.OS === 'android'}
       />
     );
   }
