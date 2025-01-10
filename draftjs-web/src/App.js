@@ -166,7 +166,7 @@ function App() {
           Authorization: `Bearer ${accessToken}`,
         }
       });
-      setSuggestions(response.data.data.data.map(groupMember => ({
+      setSuggestions(response.data.data.map(groupMember => ({
         name: groupMember.user.full_name,
         avatar: groupMember.user.profile_image,
         id: groupMember.user.id,
