@@ -356,6 +356,7 @@ function App() {
         mentionsOpen: open,
         channelMentions,
         channelMentionsOpen: isChannelMentionsOpen,
+        group,
       })
     );
   }

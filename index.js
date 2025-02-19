@@ -29,6 +29,7 @@ class RNDraftView extends Component {
     rawEditorState: null,
     mentions: [],
     channelMentions: [],
+    group: null,
   };
 
   executeScript = (functionName, parameter) => {
@@ -65,6 +66,10 @@ class RNDraftView extends Component {
     return [this.state.editorState, this.state.rawEditorState];
   };
 
+  getGroup = () => {
+    return this.state.group;
+  }
+
   _onMessage = event => {
     const {
       onStyleChanged = () => null,
@@ -72,7 +77,7 @@ class RNDraftView extends Component {
       onMentionSuggestionsActive = () => null,
     } = this.props;
     const { data } = event.nativeEvent;
-    const { blockType, styles, editorState, rawEditorState, mentions, mentionsOpen, channelMentions, channelMentionsOpen, isMounted, containerHeight } = JSON.parse(data);
+    const { blockType, styles, editorState, rawEditorState, mentions, mentionsOpen, channelMentions, channelMentionsOpen, isMounted, containerHeight, group } = JSON.parse(data);
     onStyleChanged(styles ? styles.split(",") : []);
     if (blockType) onBlockTypeChanged(blockType);
     if (editorState)
@@ -82,13 +87,15 @@ class RNDraftView extends Component {
     if(mentions)
       this.setState({ mentions, });
     if(channelMentions)
-      this.setState({ channelMentions, })
+      this.setState({ channelMentions, });
     if (isMounted) this.widgetMounted();
     if(mentionsOpen && onMentionSuggestionsActive) onMentionSuggestionsActive();
     if(channelMentionsOpen && onMentionSuggestionsActive) onMentionSuggestionsActive();
     if(typeof containerHeight === 'number' && !isNaN(containerHeight) && this.props.onLayout) {
       this.props.onLayout(containerHeight);
     }
+    if(group) 
+        this.setState({ group, });
   };
 
   widgetMounted = () => {
