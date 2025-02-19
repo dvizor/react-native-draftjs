@@ -80,6 +80,7 @@ function App() {
 
     //channel mentions
     const [isChannelMentionsOpen, setIsChannelMentionsOpen] = React.useState(false);
+    const [channelSuggestions , setChannelSuggestions] = useState([]);
     const [channelMentions, setChannelMentions] = React.useState([]);
 
   const onOpenChange = useCallback((_open) => {
@@ -90,7 +91,14 @@ function App() {
     setMentions([
       ...mentions,
       mention.id,
-    ])
+    ]);
+  }
+
+  const onAddChannelMention = mention => {
+    setChannelMentions([
+      ...channelMentions,
+      mention.id,
+    ]);
   }
 
   useEffect(() => {
@@ -225,7 +233,7 @@ function App() {
     const filteredChannels = groupChannels.filter((channel) =>
       channel.name.toLowerCase().includes(query.toLowerCase())
     );
-    setChannelMentions(filteredChannels.map((channel) => {
+    setChannelSuggestions(filteredChannels.map((channel) => {
       return {
         name: channel.name,
         avatar: channel.emoji,
@@ -401,9 +409,9 @@ function App() {
       <ChannelMentionSuggestions
         open={isChannelMentionsOpen}
         onOpenChange={onChannelMentionsOpen}
-        suggestions={channelMentions}
+        suggestions={channelSuggestions}
         onSearchChange={onChannelsSearchChange}
-        onAddMention={onAddMention}
+        onAddMention={onAddChannelMention}
         entryComponent={(EntryComponent)}
       />
     </>
