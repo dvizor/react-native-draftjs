@@ -213,14 +213,14 @@ function App() {
   }
 
   // channel mentions
-  const onChannelMentionsOpen = React.useCallback((arg0) => {
+  const onChannelMentionsOpen = useCallback((arg0) => {
     setIsChannelMentionsOpen(arg0);
   }, []);
-  const onChannelsSearchChange = React.useCallback(({ value }) => {
-    seachForChannels(value);
+  const onChannelsSearchChange = useCallback(({ value }) => {
+    searchForChannels(value);
   }, []);
 
-  const seachForChannels = (query) => {
+  const searchForChannels = (query) => {
     const groupChannels = (group && group.channels) ? group.channels : []
     const filteredChannels = groupChannels.filter((channel) =>
       channel.name.toLowerCase().includes(query.toLowerCase())
@@ -346,6 +346,8 @@ function App() {
         rawEditorState: convertToRaw(editorState.getCurrentContent()),
         mentions,
         mentionsOpen: open,
+        channelMentions,
+        channelMentionsOpen: isChannelMentionsOpen,
       })
     );
   }

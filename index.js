@@ -85,7 +85,7 @@ class RNDraftView extends Component {
       this.setState({ channelMentions, })
     if (isMounted) this.widgetMounted();
     if(mentionsOpen && onMentionSuggestionsActive) onMentionSuggestionsActive();
-    if(channelMentions && onMentionSuggestionsActive) onMentionSuggestionsActive();
+    if(channelMentionsOpen && onMentionSuggestionsActive) onMentionSuggestionsActive();
     if(typeof containerHeight === 'number' && !isNaN(containerHeight) && this.props.onLayout) {
       this.props.onLayout(containerHeight);
     }
