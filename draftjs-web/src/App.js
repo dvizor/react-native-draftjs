@@ -49,7 +49,7 @@ const channelMentionPlugin = createMentionPlugin({
 const { MentionSuggestions: UserMentionSuggestions } = mentionPlugin;
 const { MentionSuggestions: ChannelMentionSuggestions } = channelMentionPlugin;
 
-const plugins = [mentionPlugin];
+const plugins = [mentionPlugin, channelMentionPlugin];
 
 /**
  * For testing the post messages

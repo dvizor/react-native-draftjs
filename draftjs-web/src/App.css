@@ -14,3 +14,11 @@
   padding: 1px;
   border-radius: 1px;
 }
+
+.postable-draft-mention-channel {
+  cursor: pointer !important;
+  background-color:#D6E7FF !important;
+  color: #365de6;
+  padding: 4px;
+  border-radius: 4px;
+}
