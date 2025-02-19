@@ -32,7 +32,22 @@ import './App.css';
   supportWhitespace: true,
 });
 
-const { MentionSuggestions } = mentionPlugin;
+// channel mentions plugin
+const channelMentionPlugin = createMentionPlugin({
+  entityMutability: 'IMMUTABLE',
+  //@ts-ignore
+  mentionComponent: MentionComponent,
+  theme: {
+    mention: 'postable-draft-mention-channel',
+    mentionSuggestions: 'postable-draft-mention-suggestions-container',
+  },
+  mentionPrefix: '#',
+  mentionTrigger: '#',
+  supportWhitespace: true,
+});
+
+const { MentionSuggestions: UserMentionSuggestions } = mentionPlugin;
+const { MentionSuggestions: ChannelMentionSuggestions } = channelMentionPlugin;
 
 const plugins = [mentionPlugin];
 
@@ -56,11 +71,16 @@ function App() {
   const [blockRenderMap, setBlockRenderMap] = useState(Map({}));
   const [isMounted, setMountStatus] = useState(false);
   const [containerHeight, setContainerHeight] = useState(0);
+  const [group, setGroup] = useState(null);
 
   //mention utils
   const [open, setOpen] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const [mentions, setMentions] = useState([]);
+
+    //channel mentions
+    const [isChannelMentionsOpen, setIsChannelMentionsOpen] = React.useState(false);
+    const [channelMentions, setChannelMentions] = React.useState([]);
 
   const onOpenChange = useCallback((_open) => {
     setOpen(_open);
@@ -192,6 +212,29 @@ function App() {
     }
   }
 
+  // channel mentions
+  const onChannelMentionsOpen = React.useCallback((arg0) => {
+    setIsChannelMentionsOpen(arg0);
+  }, []);
+  const onChannelsSearchChange = React.useCallback(({ value }) => {
+    seachForChannels(value);
+  }, []);
+
+  const seachForChannels = (query) => {
+    const groupChannels = (group && group.channels) ? group.channels : []
+    const filteredChannels = groupChannels.filter((channel) =>
+      channel.name.toLowerCase().includes(query.toLowerCase())
+    );
+    setChannelMentions(filteredChannels.map((channel) => {
+      return {
+        name: channel.name,
+        avatar: channel.emoji,
+        id: channel.id,
+        slug: channel.slug,
+      }
+    }));
+  }
+
   const handleKeyCommand = (command, editorState) => {
     const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
@@ -257,6 +300,10 @@ function App() {
     setAccessToken(communityAccessToken);
   }
 
+  const setCommunityData = stringifiedGroup => {
+    setGroup(JSON.parse(stringifiedGroup));
+  }
+
   const focusTextEditor = () => {
     _draftEditorRef.current && _draftEditorRef.current.focus();
   };
@@ -290,6 +337,7 @@ function App() {
   window.resetEditorState = resetEditorState;
   window.setMentionsURI = setMentionsURI;
   window.setCommunityAccessToken = setCommunityAccessToken;
+  window.setCommunityData = setCommunityData;
 
   if (window.ReactNativeWebView) {
     window.ReactNativeWebView.postMessage(
@@ -339,11 +387,20 @@ function App() {
         onToggleBlockType={toggleBlockType}
         onToggleInlineStyle={toggleInlineStyle}
       />
-      <MentionSuggestions
+      <UserMentionSuggestions
         open={open}
         onOpenChange={onOpenChange}
         suggestions={suggestions}
         onSearchChange={onSearchChange}
+        onAddMention={onAddMention}
+        entryComponent={(EntryComponent)}
+      />
+
+      <ChannelMentionSuggestions
+        open={isChannelMentionsOpen}
+        onOpenChange={onChannelMentionsOpen}
+        suggestions={channelMentions}
+        onSearchChange={onChannelsSearchChange}
         onAddMention={onAddMention}
         entryComponent={(EntryComponent)}
       />

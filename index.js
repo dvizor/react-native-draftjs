@@ -27,6 +27,7 @@ class RNDraftView extends Component {
     editorState: "",
     rawEditorState: null,
     mentions: [],
+    channelMentions: [],
   };
 
   executeScript = (functionName, parameter) => {
@@ -55,6 +56,10 @@ class RNDraftView extends Component {
     return this.state.mentions;
   }
 
+  getChannelMentions = () => {
+    return this.state.channelMentions;
+  }
+
   getEditorState = () => {
     return [this.state.editorState, this.state.rawEditorState];
   };
@@ -66,7 +71,7 @@ class RNDraftView extends Component {
       onMentionSuggestionsActive = () => null,
     } = this.props;
     const { data } = event.nativeEvent;
-    const { blockType, styles, editorState, rawEditorState, mentions, mentionsOpen, isMounted, containerHeight } = JSON.parse(data);
+    const { blockType, styles, editorState, rawEditorState, mentions, mentionsOpen, channelMentions, channelMentionsOpen, isMounted, containerHeight } = JSON.parse(data);
     onStyleChanged(styles ? styles.split(",") : []);
     if (blockType) onBlockTypeChanged(blockType);
     if (editorState)
@@ -75,8 +80,11 @@ class RNDraftView extends Component {
       this.setState({ rawEditorState, });
     if(mentions)
       this.setState({ mentions, });
+    if(channelMentions)
+      this.setState({ channelMentions, })
     if (isMounted) this.widgetMounted();
     if(mentionsOpen && onMentionSuggestionsActive) onMentionSuggestionsActive();
+    if(channelMentions && onMentionSuggestionsActive) onMentionSuggestionsActive();
     if(typeof containerHeight === 'number' && !isNaN(containerHeight) && this.props.onLayout) {
       this.props.onLayout(containerHeight);
     }
@@ -92,6 +100,7 @@ class RNDraftView extends Component {
       onEditorReady = () => null,
       mentionsURL,
       accessToken,
+      stringifiedGroup,
     } = this.props;
     if(mentionsURL) {
       this.executeScript("setMentionsURI", mentionsURL);
@@ -107,6 +116,9 @@ class RNDraftView extends Component {
     }
     if (styleSheet) {
       this.executeScript("setEditorStyleSheet", styleSheet);
+    }
+    if (stringifiedGroup) {
+      this.executeScript("setCommunityData", stringifiedGroup);
     }
     if (styleMap) {
       try {

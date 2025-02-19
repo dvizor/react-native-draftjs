@@ -1,5 +1,7 @@
 import PropTypes from "prop-types";
 import React from "react";
+import { Emoji } from "emoji-mart";
+import ChannelHashTag from "./ChannelHashTag";
 
 const getNameInitials = (name = "") => {
   let abbr = "";
@@ -59,34 +61,71 @@ const EntryComponent = ({
             alignItems: 'center',
           }}
           >
-            {mention.avatar ? (
-              <img src={mention.avatar} alt="av" style={{
-                height: '35px',
-                width: '35px',
-                borderRadius: '50%',
-                marginRight: '6px',
-              }}/>
-            ) : (
+            {
+              mention.slug ?
+              <>
               <div
               style={{
-                height: '35px',
-                width: '35px',
-                minWidth: '35px',
-                borderRadius: '50%',
-                marginRight: '6px',
                 display: 'flex',
+                marginRight: '5px',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: '13px',
-                color: '#fff',
-                fontWeight: '700',
-                fontFamily: 'Arial',
-                backgroundColor: getHslFromString(mention.name),
               }}
               >
-              {getNameInitials(mention.name)}
+                {
+                  mention.avatar ?
+                    <span
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center', 
+                      }}
+                      dangerouslySetInnerHTML={{
+                        //@ts-ignore
+                        __html: Emoji({
+                          html: true,
+                          set: "apple",
+                          emoji: mention.avatar,
+                          size: 18
+                        })
+                      }}
+                    />
+                    :
+                    <ChannelHashTag fill="#000" />
+                }
               </div>
-            )}
+              </> :
+              <>
+              {mention.avatar ? (
+                <img src={mention.avatar} alt="av" style={{
+                  height: '35px',
+                  width: '35px',
+                  borderRadius: '50%',
+                  marginRight: '6px',
+                }}/>
+              ) : (
+                <div
+                style={{
+                  height: '35px',
+                  width: '35px',
+                  minWidth: '35px',
+                  borderRadius: '50%',
+                  marginRight: '6px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '13px',
+                  color: '#fff',
+                  fontWeight: '700',
+                  fontFamily: 'Arial',
+                  backgroundColor: getHslFromString(mention.name),
+                }}
+                >
+                {getNameInitials(mention.name)}
+                </div>
+              )}
+              </>
+            }
             <span style={{
               fontSize: '14px',
               fontFamily: 'Arial',
