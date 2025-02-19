@@ -19,6 +19,7 @@ class RNDraftView extends Component {
     mentionsURL: PropTypes.string,
     accessToken: PropTypes.string,
     onLayout: PropTypes.func,
+    stringifiedGroup: PropTypes.string,
   };
 
   _webViewRef = React.createRef();
