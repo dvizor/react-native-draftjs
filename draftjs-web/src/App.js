@@ -249,10 +249,9 @@ function App() {
   }, [group]);
 
   const searchForChannels = (query) => {
-    // const filteredChannels = group && group.channels ? group.channels.filter((channel) =>
-    //   channel.name.toLowerCase().includes(query.toLowerCase())
-    // ): [];
-    const filteredChannels = group && group.channels ? group.channels : [];
+    const filteredChannels = group && group.channels ? group.channels.filter((channel) =>
+      channel.name.toLowerCase().includes(query.toLowerCase())
+    ): [];
     setChannelSuggestions(filteredChannels.map((channel) => {
       return {
         name: channel.name,
@@ -376,7 +375,6 @@ function App() {
         mentionsOpen: open,
         channelMentions,
         channelMentionsOpen: isChannelMentionsOpen,
-        group,
       })
     );
   }
