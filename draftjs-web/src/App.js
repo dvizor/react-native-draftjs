@@ -19,19 +19,6 @@ import 'draft-js/dist/Draft.css';
 import axios from 'axios';
 import './App.css';
 
- //mentions plugin
- const mentionPlugin = createMentionPlugin({
-  entityMutability: 'IMMUTABLE',
-  //@ts-ignore
-  mentionComponent: MentionComponent,
-  theme: {
-    mention: 'postable-draft-mention-text',
-    mentionSuggestions: 'postable-draft-mention-suggestions-container',
-  },
-  mentionPrefix: '@',
-  supportWhitespace: true,
-});
-
 // channel mentions plugin
 const channelMentionPlugin = createMentionPlugin({
   entityMutability: 'IMMUTABLE',
@@ -46,10 +33,23 @@ const channelMentionPlugin = createMentionPlugin({
   supportWhitespace: true,
 });
 
-const { MentionSuggestions: UserMentionSuggestions } = mentionPlugin;
-const { MentionSuggestions: ChannelMentionSuggestions } = channelMentionPlugin;
+ //mentions plugin
+ const mentionPlugin = createMentionPlugin({
+  entityMutability: 'IMMUTABLE',
+  //@ts-ignore
+  mentionComponent: MentionComponent,
+  theme: {
+    mention: 'postable-draft-mention-text',
+    mentionSuggestions: 'postable-draft-mention-suggestions-container',
+  },
+  mentionPrefix: '@',
+  supportWhitespace: true,
+});
 
-const plugins = [mentionPlugin, channelMentionPlugin];
+const { MentionSuggestions: ChannelMentionSuggestions } = channelMentionPlugin;
+const { MentionSuggestions: UserMentionSuggestions } = mentionPlugin;
+
+const plugins = [channelMentionPlugin, mentionPlugin];
 
 /**
  * For testing the post messages
