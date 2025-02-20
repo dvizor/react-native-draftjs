@@ -30,7 +30,7 @@ class RNDraftView extends Component {
     rawEditorState: null,
     mentions: [],
     channelMentions: [],
-    channelMentionsOpen: false,
+    channels: [],
   };
 
   executeScript = (functionName, parameter) => {
@@ -67,8 +67,8 @@ class RNDraftView extends Component {
     return [this.state.editorState, this.state.rawEditorState];
   };
 
-  getChannelMentionsOpen = () => {
-    return this.state.channelMentionsOpen;
+  getProps = () => {
+    return this.props;
   }
 
   _onMessage = event => {
@@ -78,7 +78,7 @@ class RNDraftView extends Component {
       onMentionSuggestionsActive = () => null,
     } = this.props;
     const { data } = event.nativeEvent;
-    const { blockType, styles, editorState, rawEditorState, mentions, mentionsOpen, channelMentions, channelMentionsOpen, isMounted, containerHeight } = JSON.parse(data);
+    const { blockType, styles, editorState, rawEditorState, mentions, mentionsOpen, channelMentions, channelMentionsOpen, isMounted, containerHeight, channels } = JSON.parse(data);
     onStyleChanged(styles ? styles.split(",") : []);
     if (blockType) onBlockTypeChanged(blockType);
     if (editorState)
@@ -95,8 +95,8 @@ class RNDraftView extends Component {
     if(typeof containerHeight === 'number' && !isNaN(containerHeight) && this.props.onLayout) {
       this.props.onLayout(containerHeight);
     }
-    if(channelMentionsOpen) 
-        this.setState({ channelMentionsOpen, });
+    if(channels) 
+        this.setState({ channels, });
   };
 
   widgetMounted = () => {

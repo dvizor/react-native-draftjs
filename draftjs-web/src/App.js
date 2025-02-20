@@ -226,13 +226,13 @@ function App() {
   }, []);
   const onChannelsSearchChange = useCallback(({ value }) => {
     searchForChannels(value);
-  }, []);
+  }, [channels]);
 
   const searchForChannels = (query) => {
     const groupChannels = channels;
-    const filteredChannels = groupChannels.filter((channel) =>
+    const filteredChannels = query ? groupChannels.filter((channel) =>
       channel.name.toLowerCase().includes(query.toLowerCase())
-    );
+    ) : groupChannels;
     setChannelSuggestions(filteredChannels.map((channel) => {
       return {
         name: channel.name,
@@ -356,6 +356,7 @@ function App() {
         mentionsOpen: open,
         channelMentions,
         channelMentionsOpen: isChannelMentionsOpen,
+        channels,
       })
     );
   }
