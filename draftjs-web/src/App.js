@@ -168,7 +168,7 @@ function App() {
           Authorization: `Bearer ${accessToken}`,
         }
       });
-      setGroup(response.data);
+      setGroup(response.data.data);
     } catch (error) {
     }
   }
