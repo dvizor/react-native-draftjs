@@ -77,11 +77,13 @@ function App() {
   const [suggestions, setSuggestions] = useState([]);
   const [mentions, setMentions] = useState([]);
 
-    //channel mentions
-    const [channels, setChannels] = useState([]);
-    const [isChannelMentionsOpen, setIsChannelMentionsOpen] = useState(false);
-    const [channelSuggestions , setChannelSuggestions] = useState([]);
-    const [channelMentions, setChannelMentions] = useState([]);
+  //channel mentions
+  const [isChannelMentionsOpen, setIsChannelMentionsOpen] = useState(false);
+  const [channelSuggestions , setChannelSuggestions] = useState([]);
+  const [channelMentions, setChannelMentions] = useState([]);
+
+  const [groupId, setGroupId] = useState(null);
+  const [group, setGroup] = useState(null);
 
   const onOpenChange = useCallback((_open) => {
     setOpen(_open);
@@ -152,6 +154,24 @@ function App() {
       );
     }
   }, [containerHeight]);
+
+  useEffect(() => {
+    if(groupId && accessToken) {
+      getGroup();
+    }
+  }, [groupId, accessToken]);
+
+  const getGroup = async () => {
+    try {
+      const response = await axios.get(`https://api.group.app/api/groups/${groupId}?include=channels:30,plans`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        }
+      });
+      setGroup(response.data);
+    } catch (error) {
+    }
+  }
 
   const onChange = (newEditorState) => {
     onEditorChange(newEditorState);
@@ -226,13 +246,12 @@ function App() {
   }, []);
   const onChannelsSearchChange = useCallback(({ value }) => {
     searchForChannels(value);
-  }, [channels]);
+  }, [group]);
 
   const searchForChannels = (query) => {
-    const groupChannels = channels;
-    const filteredChannels = groupChannels.filter((channel) =>
+    const filteredChannels = group.channels ? group.channels.filter((channel) =>
       channel.name.toLowerCase().includes(query.toLowerCase())
-    );
+    ): [];
     setChannelSuggestions(filteredChannels.map((channel) => {
       return {
         name: channel.name,
@@ -308,8 +327,8 @@ function App() {
     setAccessToken(communityAccessToken);
   }
 
-  const setUserChannels = userChannels => {
-    setChannels(userChannels);
+  const setCommunityId = communityId => {
+    setGroupId(communityId);
   }
 
   const focusTextEditor = () => {
@@ -345,7 +364,7 @@ function App() {
   window.resetEditorState = resetEditorState;
   window.setMentionsURI = setMentionsURI;
   window.setCommunityAccessToken = setCommunityAccessToken;
-  window.setUserChannels = setUserChannels;
+  window.setCommunityId = setCommunityId;
 
   if (window.ReactNativeWebView) {
     window.ReactNativeWebView.postMessage(

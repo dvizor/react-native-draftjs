@@ -20,7 +20,7 @@ class RNDraftView extends Component {
     mentionsURL: PropTypes.string,
     accessToken: PropTypes.string,
     onLayout: PropTypes.func,
-    userChannels: PropTypes.array,
+    groupId: PropTypes.any,
   };
 
   _webViewRef = React.createRef();
@@ -116,7 +116,7 @@ class RNDraftView extends Component {
       onEditorReady = () => null,
       mentionsURL,
       accessToken,
-      userChannels,
+      groupId,
     } = this.props;
     if(mentionsURL) {
       this.executeScript("setMentionsURI", mentionsURL);
@@ -133,8 +133,8 @@ class RNDraftView extends Component {
     if (styleSheet) {
       this.executeScript("setEditorStyleSheet", styleSheet);
     }
-    if (userChannels) {
-      this.executeScript("setUserChannels", userChannels);
+    if (groupId) {
+      this.executeScript("setCommunityId", groupId);
     }
     if (styleMap) {
       try {
