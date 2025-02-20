@@ -19,7 +19,7 @@ class RNDraftView extends Component {
     mentionsURL: PropTypes.string,
     accessToken: PropTypes.string,
     onLayout: PropTypes.func,
-    stringifiedGroup: PropTypes.string,
+    stringifiedChannels: PropTypes.string,
   };
 
   _webViewRef = React.createRef();
@@ -29,7 +29,7 @@ class RNDraftView extends Component {
     rawEditorState: null,
     mentions: [],
     channelMentions: [],
-    group: null,
+    channels: [],
   };
 
   executeScript = (functionName, parameter) => {
@@ -66,8 +66,8 @@ class RNDraftView extends Component {
     return [this.state.editorState, this.state.rawEditorState];
   };
 
-  getGroup = () => {
-    return this.state.group;
+  getChannels = () => {
+    return this.state.channels;
   }
 
   _onMessage = event => {
@@ -77,7 +77,7 @@ class RNDraftView extends Component {
       onMentionSuggestionsActive = () => null,
     } = this.props;
     const { data } = event.nativeEvent;
-    const { blockType, styles, editorState, rawEditorState, mentions, mentionsOpen, channelMentions, channelMentionsOpen, isMounted, containerHeight, group } = JSON.parse(data);
+    const { blockType, styles, editorState, rawEditorState, mentions, mentionsOpen, channelMentions, channelMentionsOpen, isMounted, containerHeight, channels } = JSON.parse(data);
     onStyleChanged(styles ? styles.split(",") : []);
     if (blockType) onBlockTypeChanged(blockType);
     if (editorState)
@@ -94,8 +94,8 @@ class RNDraftView extends Component {
     if(typeof containerHeight === 'number' && !isNaN(containerHeight) && this.props.onLayout) {
       this.props.onLayout(containerHeight);
     }
-    if(group) 
-        this.setState({ group, });
+    if(channels) 
+        this.setState({ channels, });
   };
 
   widgetMounted = () => {
@@ -108,7 +108,7 @@ class RNDraftView extends Component {
       onEditorReady = () => null,
       mentionsURL,
       accessToken,
-      stringifiedGroup,
+      stringifiedChannels,
     } = this.props;
     if(mentionsURL) {
       this.executeScript("setMentionsURI", mentionsURL);
@@ -125,8 +125,8 @@ class RNDraftView extends Component {
     if (styleSheet) {
       this.executeScript("setEditorStyleSheet", styleSheet);
     }
-    if (stringifiedGroup) {
-      this.executeScript("setCommunityData", stringifiedGroup);
+    if (stringifiedChannels) {
+      this.executeScript("setUserChannels", stringifiedChannels);
     }
     if (styleMap) {
       try {

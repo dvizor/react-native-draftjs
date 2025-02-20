@@ -71,7 +71,7 @@ function App() {
   const [blockRenderMap, setBlockRenderMap] = useState(Map({}));
   const [isMounted, setMountStatus] = useState(false);
   const [containerHeight, setContainerHeight] = useState(0);
-  const [group, setGroup] = useState(null);
+  const [channels, setChannels] = useState([]);
 
   //mention utils
   const [open, setOpen] = useState(false);
@@ -229,7 +229,7 @@ function App() {
   }, []);
 
   const searchForChannels = (query) => {
-    const groupChannels = (group && group.channels) ? group.channels : []
+    const groupChannels = channels;
     const filteredChannels = groupChannels.filter((channel) =>
       channel.name.toLowerCase().includes(query.toLowerCase())
     );
@@ -308,8 +308,8 @@ function App() {
     setAccessToken(communityAccessToken);
   }
 
-  const setCommunityData = stringifiedGroup => {
-    setGroup(JSON.parse(stringifiedGroup));
+  const setUserChannels = stringifiedChannels => {
+    setChannels(JSON.parse(stringifiedChannels));
   }
 
   const focusTextEditor = () => {
@@ -345,7 +345,7 @@ function App() {
   window.resetEditorState = resetEditorState;
   window.setMentionsURI = setMentionsURI;
   window.setCommunityAccessToken = setCommunityAccessToken;
-  window.setCommunityData = setCommunityData;
+  window.setUserChannels = setUserChannels;
 
   if (window.ReactNativeWebView) {
     window.ReactNativeWebView.postMessage(
@@ -356,7 +356,7 @@ function App() {
         mentionsOpen: open,
         channelMentions,
         channelMentionsOpen: isChannelMentionsOpen,
-        group,
+        channels,
       })
     );
   }
