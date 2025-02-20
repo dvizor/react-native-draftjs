@@ -30,7 +30,7 @@ class RNDraftView extends Component {
     rawEditorState: null,
     mentions: [],
     channelMentions: [],
-    channels: [],
+    error: null,
   };
 
   executeScript = (functionName, parameter) => {
@@ -71,6 +71,10 @@ class RNDraftView extends Component {
     return this.props;
   }
 
+  getError = () => {
+    return this.state.error;
+  }
+
   _onMessage = event => {
     const {
       onStyleChanged = () => null,
@@ -78,7 +82,12 @@ class RNDraftView extends Component {
       onMentionSuggestionsActive = () => null,
     } = this.props;
     const { data } = event.nativeEvent;
-    const { blockType, styles, editorState, rawEditorState, mentions, mentionsOpen, channelMentions, channelMentionsOpen, isMounted, containerHeight, channels } = JSON.parse(data);
+
+    if(JSON.parse(data).type === 'error') {
+      this.setState({ error: data })
+    }
+
+    const { blockType, styles, editorState, rawEditorState, mentions, mentionsOpen, channelMentions, channelMentionsOpen, isMounted, containerHeight } = JSON.parse(data);
     onStyleChanged(styles ? styles.split(",") : []);
     if (blockType) onBlockTypeChanged(blockType);
     if (editorState)
@@ -95,8 +104,6 @@ class RNDraftView extends Component {
     if(typeof containerHeight === 'number' && !isNaN(containerHeight) && this.props.onLayout) {
       this.props.onLayout(containerHeight);
     }
-    if(channels) 
-        this.setState({ channels, });
   };
 
   widgetMounted = () => {
@@ -178,6 +185,25 @@ class RNDraftView extends Component {
         onMessage={this._onMessage}
         scrollEnabled={false}
         scalesPageToFit={Platform.OS === 'android'}
+        injectedJavaScript={`
+          window.onerror = function(message, source, lineno, colno, error) {
+            window.ReactNativeWebView.postMessage(JSON.stringify({
+              type: 'error',
+              message,
+              source,
+              lineno,
+              colno,
+              error: error ? error.stack : null
+            }));
+          };
+          console.error = function(...args) {
+            window.ReactNativeWebView.postMessage(JSON.stringify({
+              type: 'console-error',
+              message: args
+            }));
+          };
+          true; // Required for injected script to execute
+        `}
       />
     );
   }
