@@ -230,9 +230,9 @@ function App() {
 
   const searchForChannels = (query) => {
     const groupChannels = channels;
-    const filteredChannels = query ? groupChannels.filter((channel) =>
+    const filteredChannels = groupChannels.filter((channel) =>
       channel.name.toLowerCase().includes(query.toLowerCase())
-    ) : groupChannels;
+    );
     setChannelSuggestions(filteredChannels.map((channel) => {
       return {
         name: channel.name,
