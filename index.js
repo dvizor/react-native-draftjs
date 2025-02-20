@@ -30,7 +30,7 @@ class RNDraftView extends Component {
     rawEditorState: null,
     mentions: [],
     channelMentions: [],
-    channelMentionsOpen: [],
+    channelMentionsOpen: false,
   };
 
   executeScript = (functionName, parameter) => {
