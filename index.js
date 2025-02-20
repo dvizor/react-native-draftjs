@@ -30,6 +30,7 @@ class RNDraftView extends Component {
     rawEditorState: null,
     mentions: [],
     channelMentions: [],
+    group: null,
     error: null,
   };
 
@@ -67,8 +68,8 @@ class RNDraftView extends Component {
     return [this.state.editorState, this.state.rawEditorState];
   };
 
-  getProps = () => {
-    return this.props;
+  getGroup = () => {
+    return this.state.group;
   }
 
   getError = () => {
@@ -87,7 +88,7 @@ class RNDraftView extends Component {
       this.setState({ error: data })
     }
 
-    const { blockType, styles, editorState, rawEditorState, mentions, mentionsOpen, channelMentions, channelMentionsOpen, isMounted, containerHeight } = JSON.parse(data);
+    const { blockType, styles, editorState, rawEditorState, mentions, mentionsOpen, channelMentions, channelMentionsOpen, isMounted, containerHeight, group } = JSON.parse(data);
     onStyleChanged(styles ? styles.split(",") : []);
     if (blockType) onBlockTypeChanged(blockType);
     if (editorState)
@@ -104,6 +105,8 @@ class RNDraftView extends Component {
     if(typeof containerHeight === 'number' && !isNaN(containerHeight) && this.props.onLayout) {
       this.props.onLayout(containerHeight);
     }
+    if(group)
+        this.setState({ group, });
   };
 
   widgetMounted = () => {

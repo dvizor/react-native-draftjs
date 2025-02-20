@@ -249,7 +249,7 @@ function App() {
   }, [group]);
 
   const searchForChannels = (query) => {
-    const filteredChannels = group.channels ? group.channels.filter((channel) =>
+    const filteredChannels = group && group.channels ? group.channels.filter((channel) =>
       channel.name.toLowerCase().includes(query.toLowerCase())
     ): [];
     setChannelSuggestions(filteredChannels.map((channel) => {
@@ -375,6 +375,7 @@ function App() {
         mentionsOpen: open,
         channelMentions,
         channelMentionsOpen: isChannelMentionsOpen,
+        group,
       })
     );
   }
