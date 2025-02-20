@@ -71,7 +71,6 @@ function App() {
   const [blockRenderMap, setBlockRenderMap] = useState(Map({}));
   const [isMounted, setMountStatus] = useState(false);
   const [containerHeight, setContainerHeight] = useState(0);
-  const [channels, setChannels] = useState([]);
 
   //mention utils
   const [open, setOpen] = useState(false);
@@ -79,6 +78,7 @@ function App() {
   const [mentions, setMentions] = useState([]);
 
     //channel mentions
+    const [channels, setChannels] = useState([]);
     const [isChannelMentionsOpen, setIsChannelMentionsOpen] = React.useState(false);
     const [channelSuggestions , setChannelSuggestions] = useState([]);
     const [channelMentions, setChannelMentions] = React.useState([]);
@@ -356,7 +356,6 @@ function App() {
         mentionsOpen: open,
         channelMentions,
         channelMentionsOpen: isChannelMentionsOpen,
-        channels,
       })
     );
   }

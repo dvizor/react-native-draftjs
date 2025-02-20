@@ -16,6 +16,7 @@ class RNDraftView extends Component {
     styleMap: PropTypes.object,
     blockRenderMap: PropTypes.object,
     onEditorReady: PropTypes.func,
+    onMentionSuggestionsActive: PropTypes.func,
     mentionsURL: PropTypes.string,
     accessToken: PropTypes.string,
     onLayout: PropTypes.func,
@@ -29,7 +30,7 @@ class RNDraftView extends Component {
     rawEditorState: null,
     mentions: [],
     channelMentions: [],
-    channels: [],
+    channelMentionsOpen: [],
   };
 
   executeScript = (functionName, parameter) => {
@@ -66,8 +67,8 @@ class RNDraftView extends Component {
     return [this.state.editorState, this.state.rawEditorState];
   };
 
-  getChannels = () => {
-    return this.state.channels;
+  getChannelMentionsOpen = () => {
+    return this.state.channelMentionsOpen;
   }
 
   _onMessage = event => {
@@ -77,7 +78,7 @@ class RNDraftView extends Component {
       onMentionSuggestionsActive = () => null,
     } = this.props;
     const { data } = event.nativeEvent;
-    const { blockType, styles, editorState, rawEditorState, mentions, mentionsOpen, channelMentions, channelMentionsOpen, isMounted, containerHeight, channels } = JSON.parse(data);
+    const { blockType, styles, editorState, rawEditorState, mentions, mentionsOpen, channelMentions, channelMentionsOpen, isMounted, containerHeight } = JSON.parse(data);
     onStyleChanged(styles ? styles.split(",") : []);
     if (blockType) onBlockTypeChanged(blockType);
     if (editorState)
@@ -94,8 +95,8 @@ class RNDraftView extends Component {
     if(typeof containerHeight === 'number' && !isNaN(containerHeight) && this.props.onLayout) {
       this.props.onLayout(containerHeight);
     }
-    if(channels) 
-        this.setState({ channels, });
+    if(channelMentionsOpen) 
+        this.setState({ channelMentionsOpen, });
   };
 
   widgetMounted = () => {
