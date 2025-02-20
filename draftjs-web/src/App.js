@@ -79,9 +79,9 @@ function App() {
 
     //channel mentions
     const [channels, setChannels] = useState([]);
-    const [isChannelMentionsOpen, setIsChannelMentionsOpen] = React.useState(false);
+    const [isChannelMentionsOpen, setIsChannelMentionsOpen] = useState(false);
     const [channelSuggestions , setChannelSuggestions] = useState([]);
-    const [channelMentions, setChannelMentions] = React.useState([]);
+    const [channelMentions, setChannelMentions] = useState([]);
 
   const onOpenChange = useCallback((_open) => {
     setOpen(_open);
@@ -308,8 +308,8 @@ function App() {
     setAccessToken(communityAccessToken);
   }
 
-  const setUserChannels = stringifiedChannels => {
-    setChannels(JSON.parse(stringifiedChannels));
+  const setUserChannels = userChannels => {
+    setChannels(userChannels);
   }
 
   const focusTextEditor = () => {
