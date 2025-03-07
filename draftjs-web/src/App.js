@@ -409,6 +409,9 @@ function App() {
         keyBindingFn={mapKeyToEditorCommand}
         placeholder={placeholder}
         plugins={plugins}
+        autoCorrect="off"
+        autoComplete="off"
+        spellCheck={false}
         />
       </div>
       <EditorController
