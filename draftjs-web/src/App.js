@@ -84,6 +84,7 @@ function App() {
 
   const [groupId, setGroupId] = useState(null);
   const [group, setGroup] = useState(null);
+  const [groupChannels, setGroupChannels] = useState([]);
 
   const onOpenChange = useCallback((_open) => {
     setOpen(_open);
@@ -158,6 +159,7 @@ function App() {
   useEffect(() => {
     if(groupId && accessToken) {
       getGroup();
+      getGroupChannels()
     }
   }, [groupId, accessToken]);
 
@@ -169,6 +171,18 @@ function App() {
         }
       });
       setGroup(response.data.data);
+    } catch (error) {
+    }
+  }
+
+  const getGroupChannels = async () => {
+    try {
+      const response = await axios.get(`https://api.group.app/api/groups/${groupId}/channels?limit=100`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        }
+      });
+      setGroupChannels(response.data.data.data);
     } catch (error) {
     }
   }
@@ -249,7 +263,7 @@ function App() {
   }, [group]);
 
   const searchForChannels = (query) => {
-    const filteredChannels = group && group.channels ? group.channels.filter((channel) =>
+    const filteredChannels = groupChannels ? groupChannels.filter((channel) =>
       channel.name.toLowerCase().includes(query.toLowerCase())
     ): [];
     setChannelSuggestions(filteredChannels.map((channel) => {
